@@ -75,9 +75,9 @@ update msg model =
                     message =
                         "Your score of " 
                             ++ (toString score.score)
-                            ++ "was successfully shared!"
+                            ++ " was successfully shared!"
                 in
-                    ( { model | alertMessage = Just "Success!" }, Cmd.none )
+                    ( { model | alertMessage = Just message }, Cmd.none )
                     
             NewScore (Err error) ->
                 let
@@ -85,7 +85,7 @@ update msg model =
                         "Error posting your score: " 
                             ++ (toString error)
                 in
-                    ( { model | alertMessage = Just "Success!" }, Cmd.none )
+                    ( { model | alertMessage = Just message }, Cmd.none )
 
             NewGame ->
                 ( { model | gameNumber = model.gameNumber + 1 }, getEntries)
@@ -192,6 +192,10 @@ getEntries =
 
 -- VIEW
 
+hasZeroScore : Model -> Bool
+hasZeroScore model =
+    (sumMarkedPoints model.entries) == 0
+
 view : Model -> Html Msg
 view model =
     div [ class "content" ]
@@ -202,7 +206,7 @@ view model =
         , viewScore (sumMarkedPoints model.entries)
         , div [ class "button-group" ]
               [ button [ onClick NewGame ] [ text "New Game" ]
-              , button [ onClick ShareScore ] [ text "Share Score"]
+              , button [ onClick ShareScore, disabled (hasZeroScore model) ] [ text "Share Score"]
               ]
         , div [ class "debug" ] [ text (toString model) ]
         , viewFooter
