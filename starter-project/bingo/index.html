@@ -4,10 +4,18 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="style.css">
     <script src="bingo.js"></script>
+    <script>
+      var node = document.getElementById('elm-app1');
+      var app = Elm.App.embed(node);
+
+    </script>
   </head>
   <body>
+    <!--
     <script>
       Elm.Bingo.fullscreen();
     </script>
+    -->
+    <div id="elm-app1"></div>
   </body>
 </html>
