@@ -4,11 +4,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="style.css">
     <script src="bingo.js"></script>
-    <script>
-      var node = document.getElementById('elm-app1');
-      var app = Elm.App.embed(node);
-
-    </script>
+    <script src="bingo2.js"></script>
   </head>
   <body>
     <!--
@@ -17,5 +13,13 @@
     </script>
     -->
     <div id="elm-app1"></div>
+    <div id="elm-app2"></div>
+    <script type="text/javascript">
+      var elmApp1Div = document.getElementById('elm-app1');
+      var elmApp2Div = document.getElementById('elm-app2');
+      Elm.Bingo.embed(elmApp1Div);
+      Elm.Bingo2.embed(elmApp2Div);
+
+    </script>
   </body>
 </html>
