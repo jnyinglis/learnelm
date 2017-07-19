@@ -2,12 +2,11 @@ module TrySVG exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Widgets exposing (..)
-
-
-type Msg
-    = Msg1
-    | Msg2
+import Html.Events exposing (on)
+import Json.Decode as Decode
+import Mouse exposing (Position)
+import Svg
+import Svg.Attributes
 
 
 main : Program Never Model Msg
@@ -20,82 +19,144 @@ main =
         }
 
 
-type alias PropertyType =
-    Int
+
+-- MODEL
 
 
 type alias Model =
-    { property : PropertyType
+    { position : Position
+    , drag : Maybe Drag
     }
 
-type alias Myvalue =
-    { one : Int
-    , two : Int
-    , three : Int
-    , four : Int
+
+type alias Drag =
+    { start : Position
+    , current : Position
     }
 
-type alias Myvalues = List Myvalue
 
-modelInitialValue : Model
-modelInitialValue =
-    { property = 1
-    }
+init : ( Model, Cmd Msg )
+init =
+    ( Model (Position 200 200) Nothing, Cmd.none )
+
+
+
+-- UPDATE
+
+
+type Msg
+    = DragStart Position
+    | DragAt Position
+    | DragEnd Position
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        Msg1 ->
-            ( model, Cmd.none )
+    ( updateHelp msg model, Cmd.none )
 
-        Msg2 ->
-            ( model, Cmd.none )
+
+updateHelp : Msg -> Model -> Model
+updateHelp msg ({ position, drag } as model) =
+    case msg of
+        DragStart xy ->
+            Model position (Just (Drag xy xy))
+
+        DragAt xy ->
+            Model position (Maybe.map (\{ start } -> Drag start xy) drag)
+
+        DragEnd _ ->
+            Model (getPosition model) Nothing
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    case model.drag of
+        Nothing ->
+            Sub.none
+
+        Just _ ->
+            Sub.batch [ Mouse.moves DragAt, Mouse.ups DragEnd ]
+
+
+
+-- VIEW
+
+
+(=>) =
+    (,)
 
 
 view : Model -> Html Msg
 view model =
     let
-        x = [ Myvalue 1 2 3 4
-            , Myvalue 2 4 6 8
-            , Myvalue 3 6 9 12
-            , Myvalue 4 8 12 16
-            , Myvalue 5 10 15 20
-            , Myvalue 4 8 12 16
-            , Myvalue 3 6 9 12
-            , Myvalue 2 4 6 8
-            , Myvalue 1 2 3 4
-        ]
+        realPosition =
+            getPosition model
     in
-        
-    div []
-        [ div []
-            [ text "New Html Program"
+        div
+            [ onMouseDown
+            , style
+                [ "background-color" => "#3C8D2F"
+                , "cursor" => "move"
+                , "width" => "100px"
+                , "height" => "100px"
+                , "border-radius" => "4px"
+                , "position" => "absolute"
+                , "left" => px realPosition.x
+                , "top" => px realPosition.y
+
+                --
+                --          , "color" => "white"
+                , "display" => "flex"
+                , "align-items" => "center"
+                , "justify-content" => "center"
+                ]
             ]
-        , div []
-            [ text "More text"
+            --      [ text "Drag Me!"
+            --      ]
+            [ Svg.svg
+                [ width 80
+                , height 80
+                , Svg.Attributes.viewBox "0 0 60 60"
+                ]
+                [ Svg.g [ Svg.Attributes.transform "translate(0, 0)" ]
+                    [ Svg.rect [ Svg.Attributes.height "10", Svg.Attributes.y "0", Svg.Attributes.width "5" ] [] ]
+                , Svg.g [ Svg.Attributes.transform "translate(8, 0)" ]
+                    [ Svg.rect [ Svg.Attributes.height "20", Svg.Attributes.y "0", Svg.Attributes.width "5" ] [] ]
+                , Svg.g [ Svg.Attributes.transform "translate(16, 0)" ]
+                    [ Svg.rect [ Svg.Attributes.height "40", Svg.Attributes.y "0", Svg.Attributes.width "5" ] [] ]
+                , Svg.g [ Svg.Attributes.transform "translate(24, 0)" ]
+                    [ Svg.rect [ Svg.Attributes.height "60", Svg.Attributes.y "0", Svg.Attributes.width "5" ] [] ]
+                , Svg.g [ Svg.Attributes.transform "translate(32, 0)" ]
+                    [ Svg.rect [ Svg.Attributes.height "40", Svg.Attributes.y "0", Svg.Attributes.width "5" ] [] ]
+                , Svg.g [ Svg.Attributes.transform "translate(40, 0)" ]
+                    [ Svg.rect [ Svg.Attributes.height "20", Svg.Attributes.y "0", Svg.Attributes.width "5" ] [] ]
+                , Svg.g [ Svg.Attributes.transform "translate(48, 0)" ]
+                    [ Svg.rect [ Svg.Attributes.height "10", Svg.Attributes.y "0", Svg.Attributes.width "5" ] [] ]
+                ]
             ]
-        , div []
-            [ text "Even more text"
-            ]
-        , div []
-            [ sparkChart 40 40 [ 10, 20, 30, 40, 50, 60, 70, 0, -10, -20 ]
-            ]
-        , div []
-            [ List.range 40 100
-                |> sparkChart 80 80
-            ]
-        , div []
-            [ sparkChart 100 100 (List.range 40 100)
-            ]
-        ]
 
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
+px : Int -> String
+px number =
+    toString number ++ "px"
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( modelInitialValue, Cmd.none )
+getPosition : Model -> Position
+getPosition { position, drag } =
+    case drag of
+        Nothing ->
+            position
+
+        Just { start, current } ->
+            Position
+                (position.x + current.x - start.x)
+                (position.y + current.y - start.y)
+
+
+onMouseDown : Attribute Msg
+onMouseDown =
+    on "mousedown" (Decode.map DragStart Mouse.position)
