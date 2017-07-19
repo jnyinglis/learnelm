@@ -86,6 +86,7 @@ subscriptions model =
 -- VIEW
 
 
+(=>) : a -> b -> ( a, b )
 (=>) =
     (,)
 
@@ -99,7 +100,7 @@ view model =
         div
             [ onMouseDown
             , style
-                [ "background-color" => "#3C8D2F"
+                [ ("background-color", "#3C8D2F")
                 , "cursor" => "move"
                 , "width" => "100px"
                 , "height" => "100px"
