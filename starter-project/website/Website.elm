@@ -1,6 +1,7 @@
 module Website exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing(style)
 import HandBakedSite
 import BootstrapSite
 
@@ -9,19 +10,21 @@ import BootstrapSite
 
 
 type alias Model =
-    Int
+    {displayHandBaked : Bool }
 
 
 initialModel : Model
 initialModel =
-    0
+    {displayHandBaked = False }
 
 
 
 -- UPDATE
 
 
-type Msg = WhichWebsite
+type Msg
+        = DisplayHandBaked
+        | DisplayBootstrap
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -34,10 +37,16 @@ update msg model = ( model, Cmd.none )
 
 view : Model -> Html msg
 view model =
-    div []
-        [ HandBakedSite.view HandBakedSite.initialModel
-        , BootstrapSite.view BootstrapSite.initialModel
-        ]
+    let
+        handBakedStyle =
+            case model.displayHandBaked of
+                    True -> ("display", "none")
+                    False -> ("display", "none")
+    in
+        div []
+            [ div [ style [ handBakedStyle ] ] [ HandBakedSite.view HandBakedSite.initialModel ]
+            , div [ style [ ("display", "none") ] ] [ BootstrapSite.view BootstrapSite.initialModel ]
+            ]
 
 
 main : Program Never Model Msg

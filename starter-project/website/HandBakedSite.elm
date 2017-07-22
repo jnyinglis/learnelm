@@ -53,7 +53,7 @@ view model =
                         , navigationEntry "Login"
                         ]
                     ]
-]
+                ]
             ]
         , div []
             [ text "Hello, World!"
