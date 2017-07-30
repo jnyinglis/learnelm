@@ -5,14 +5,38 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <!--<link rel="stylesheet" href="style.css">-->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+        <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">-->
+
+         <!-- MDL 
+        The library relies on Google's Material Design fonts, icons, and the CSS
+        of Google's Material Design Lite implementation. Load these as follows.
+        -->
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500|Roboto+Mono|Roboto+Condensed:400,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.2.0/material.teal-red.min.css" />
+
+        <!-- Dialogs 
+        
+        The Dialog component requires a polyfill on most browsers. If your app
+        uses Dialogs and is expected to work outside Google Chrome, get the 
+        polyfill at the URL below and load as follows. 
+        https://github.com/GoogleChrome/dialog-polyfill
+        -->
+        <script src="assets/dialog/dialog-polyfill.js"></script>
+        <link rel="stylesheet" type="text/css" href="assets/dialog/dialog-polyfill.css" />
+
+        <!-- Event.focusin
+            Polyfill required for Firefox to support focusin and focusout events
+        -->
+        <script src="https://cdn.polyfill.io/v2/polyfill.js?features=Event.focusin"></script>
+
     </head>
     <body>
         <!--<div id="HandBakedSite"></div>-->
         <!--<div id="BootstrapSite"></div>-->
-        <script src="Main.js"></script>
+        <script src="Website.js"></script>
         <script>
-            Elm.Website.fullscreen();
+            Elm.MaterialDesignSite.fullscreen();
             //var node_HandBakedSite = document.getElementById('HandBakedSite');
             //var app_HandBakedSite = Elm.HandBakedSite.embed(node_HandBakedSite);
 
